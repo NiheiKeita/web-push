@@ -9,6 +9,7 @@ const nextConfig = {
   reactStrictMode: true,
   swcMinify: true,
   output: 'export',
+  basePath: '/web-push',
   images: {
     unoptimized: true,
   },

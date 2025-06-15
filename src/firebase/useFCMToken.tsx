@@ -20,8 +20,14 @@ const useFCMToken = () => {
         const isFCMSupported = await isSupported()
         if (!isFCMSupported) return
 
+        // Service Workerの登録
+        await navigator.serviceWorker.register('/web-push/firebase-messaging-sw.js', {
+          scope: '/web-push/'
+        })
+
         const token = await getToken(messaging, {
           vapidKey: process.env.NEXT_PUBLIC_FIREBASE_VAPID_KEY,
+          serviceWorkerRegistration: await navigator.serviceWorker.getRegistration()
         })
         setFcmToken(token)
       } catch (error) {

@@ -1,17 +1,24 @@
-/** @type {import('next').NextConfig} */
-const nextPWA = require('next-pwa')({
+const withPWA = require('next-pwa')({
   dest: 'public',
   register: true,
   skipWaiting: true,
+  disable: process.env.NODE_ENV === 'development'
 })
 
+const repoName = 'web-push'
+
+/** @type {import('next').NextConfig} */
 const nextConfig = {
   reactStrictMode: true,
   swcMinify: true,
   output: 'export',
-  basePath: '/web-push',
+  basePath: `/${repoName}`,
+  assetPrefix: `/${repoName}/`,
   images: {
     unoptimized: true,
+  },
+  experimental: {
+    appDir: true,
   },
   webpack: (config) => {
     config.plugins.push(
@@ -28,8 +35,13 @@ const nextConfig = {
       })
     )
 
+    config.resolve.fallback = {
+      ...config.resolve.fallback,
+      fs: false,
+    }
+
     return config
   },
 }
 
-module.exports = nextPWA(nextConfig)
+module.exports = withPWA(nextConfig)

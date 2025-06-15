@@ -1,3 +1,5 @@
+"use client"
+
 import { initializeApp } from 'firebase/app'
 import { getMessaging } from 'firebase/messaging'
 
@@ -11,5 +13,15 @@ const firebaseConfig = {
 }
 
 const app = initializeApp(firebaseConfig)
-export const messaging = getMessaging(app)
-export default app
+
+let messaging: ReturnType<typeof getMessaging> | null = null
+
+if (typeof window !== 'undefined') {
+  try {
+    messaging = getMessaging(app)
+  } catch (error) {
+    console.error('Firebase Messaging初期化エラー:', error)
+  }
+}
+
+export { messaging }

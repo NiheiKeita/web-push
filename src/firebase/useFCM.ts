@@ -1,23 +1,30 @@
+"use client"
+
 import { useEffect, useState } from "react"
 import { MessagePayload, onMessage } from "firebase/messaging"
 import { messaging } from "~/firebase/config"
 import useFCMToken from "./useFCMToken"
 
-const useFCM = () => {
+export const useFCM = () => {
   const fcmToken = useFCMToken()
   const [messages, setMessages] = useState<MessagePayload[]>([])
+
   useEffect(() => {
-    if ("serviceWorker" in navigator) {
-      const fcmMessaging = messaging
-      const unsubscribe = onMessage(fcmMessaging, (payload) => {
+    if (typeof window === 'undefined') return
+    if (!("serviceWorker" in navigator)) return
+    if (!messaging) return
+
+    try {
+      const unsubscribe = onMessage(messaging, (payload) => {
         setMessages((messages) => [...messages, payload])
       })
 
       return () => unsubscribe()
+    } catch (error) {
+      console.error('FCM初期化エラー:', error)
     }
   }, [fcmToken])
 
   return { fcmToken, messages }
 }
 
-export default useFCM

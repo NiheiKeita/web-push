@@ -1,30 +1,32 @@
 import React from "react"
-import type { Metadata } from "next"
+import type { Metadata, Viewport } from "next"
 import { Inter } from "next/font/google"
 import "./globals.css"
 import { Providers } from './providers'
 
 const inter = Inter({ subsets: ["latin"] })
 
+export const viewport: Viewport = {
+  width: 'device-width',
+  initialScale: 1,
+  maximumScale: 1,
+  themeColor: '#8936FF',
+}
+
 export const metadata: Metadata = {
   title: "ケイタMAXの冒険",
   description: "ブラウザで遊べるRPGゲーム",
   manifest: '/manifest.json',
-  themeColor: '#8936FF',
   appleWebApp: {
     capable: true,
     statusBarStyle: 'default',
     title: 'ケイタMAXの冒険',
   },
-  viewport: {
-    width: 'device-width',
-    initialScale: 1,
-    maximumScale: 1,
-  },
   icons: {
     icon: '/icon512_rounded.png',
     apple: '/icon512_rounded.png',
   },
+  viewport: viewport,
 }
 
 export default function RootLayout({
@@ -40,7 +42,11 @@ export default function RootLayout({
       <body className={`${inter.className} min-h-screen bg-gray-900`}>
         <div className="flex min-h-screen items-center justify-center">
           <div className="w-full max-w-4xl">
-            <Providers>{children}</Providers>
+            <Providers>
+              <main className="flex min-h-screen flex-col items-center justify-between">
+                {children}
+              </main>
+            </Providers>
           </div>
         </div>
       </body>
